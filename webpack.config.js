@@ -4,7 +4,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
     entry: {
-        app: './index.js',
+        app: './index.jsx',
     },
     context: `${__dirname}/static_src`,
     output: {
