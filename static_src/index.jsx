@@ -5,8 +5,8 @@ class Component extends React.Component {
     render(){
         return (
             [
-                <h1>Hello World! Just one more Test here</h1>,
-                <p>Simple description here</p>
+                <h1 key='h1'>Hello World! Just one more Test here</h1>,
+                <p key='desc'>Simple description here</p>
             ]
         )
     }
