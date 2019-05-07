@@ -23,8 +23,10 @@ export default class MessageField extends React.Component {
 
     handleSendMessage = (sender, text) => {
         const { messageList, messages, nextId } = this.props;
-        this.props.updateState([ ...messageList, nextId],{ ...messages, [nextId]: {sender, text}},nextId + 1);
-        this.setState({ input: '' });
+        if(text.length > 1) {
+            this.props.updateState([...messageList, nextId], {...messages, [nextId]: {sender, text}}, nextId + 1);
+            this.setState({input: ''});
+        }
     };
 
     render(){
