@@ -3,13 +3,22 @@ import PropTypes from 'prop-types';
 import Message from './Message';
 import TextField from 'material-ui/TextField';
 import Button from '@material-ui/core/Button';
+import { bindActionCreators } from 'redux';
+import { sendMessage } from '../actions/messageActions';
+import connect from "react-redux/es/connect/connect";
 
-export default class MessageField extends React.Component {
+class MessageField extends React.Component {
     static propTypes = {
         messageList: PropTypes.array.isRequired,
         messages: PropTypes.object.isRequired,
         nextId: PropTypes.number.isRequired,
-        updateState: PropTypes.func.isRequired
+        sendMessage: PropTypes.func.isRequired,
+        chatId: PropTypes.number,
+        chats: PropTypes.object.isRequired,
+    };
+
+    static defaultProps = {
+        chatId: 1,
     };
 
     state = {
@@ -22,17 +31,16 @@ export default class MessageField extends React.Component {
     };
 
     handleSendMessage = (sender, text) => {
-        const { messageList, messages, nextId } = this.props;
         if(text.length > 1) {
-            this.props.updateState([...messageList, nextId], {...messages, [nextId]: {sender, text}}, nextId + 1);
             this.setState({input: ''});
+            this.props.sendMessage(this.props.chatId, sender, text);
         }
     };
 
     render(){
-        const { messageList, messages } = this.props;
-        const messageElements = messageList.map(
-            (idx, index) => <Message key={ `${Date.now()}_${idx}_${index}` } text={ messages[idx].text } />
+        const { messageList, messages, chats, chatId } = this.props;
+        const messageElements = chats[chatId].messageList.map(
+            (idx, index) => <Message key={ `${Date.now()}_${idx}_${index}` } text={ messages[idx].text } sender={ messages[idx].sender } />
         );
         return (
             <div>
@@ -56,3 +64,14 @@ export default class MessageField extends React.Component {
         )
     }
 }
+
+const mapStateToProps = ({ messageReducer, chatReducer }) => ({
+    messageList: messageReducer.messageList,
+    messages: messageReducer.messages,
+    nextId: messageReducer.nextId,
+    chats: chatReducer.chats,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({ sendMessage }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessageField);
