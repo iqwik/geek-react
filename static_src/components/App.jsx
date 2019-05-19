@@ -25,7 +25,7 @@ export default class App extends React.Component {
         }
     }
 
-    sendMessage = () => {
+    handleSendMessage = () => {
         this.setState({ messages: [ ...this.state.messages,
             messageChoices[Math.floor(Math.random()*messageChoices.length)], messageRobot] })
     };
@@ -36,7 +36,7 @@ export default class App extends React.Component {
             <div>
                 <h1>React - Он такой!</h1>
                 <h3>...сякой и непростой...</h3>
-                <button onClick={ this.sendMessage }>Жмякай!</button>
+                <button onClick={ this.handleSendMessage }>Жмякай!</button>
                 <div className="message_container">{ messageElements }</div>
             </div>
         )
