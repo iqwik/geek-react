@@ -6,8 +6,7 @@ export default store => next => (action) => {
             if (action.sender === 'user') {
                 setTimeout(() => store.dispatch(sendMessage(action.chatId, 'bot', 'Привет я Робот, иди нафиг!')), 500);
             }
-        case HIGH:
-
+        //case HIGH:
     }
     return next(action)
 }
