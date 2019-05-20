@@ -20,7 +20,7 @@ export default class Layout extends React.Component {
                 <Header key="header"/>,
                 <Grid container spacing={8} key="container">
                     <Grid container item xs={3}>
-                        <ChatList />
+                        <ChatList chatId={ this.props.chatId } />
                     </Grid>
                     <Grid container item xs={9}>
                         <MessageField chatId={ this.props.chatId } />

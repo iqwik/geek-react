@@ -38,7 +38,7 @@ class MessageField extends React.Component {
     };
 
     render(){
-        const { messageList, messages, chats, chatId } = this.props;
+        const { messages, chats, chatId } = this.props;
         const messageElements = chats[chatId].messageList.map(
             (idx, index) => <Message key={ `${Date.now()}_${idx}_${index}` } text={ messages[idx].text } sender={ messages[idx].sender } />
         );
