@@ -11,10 +11,12 @@ class ChatList extends React.Component {
         chatList: PropTypes.array.isRequired,
         chats: PropTypes.object.isRequired,
         push: PropTypes.func.isRequired,
+        highlightedChat: PropTypes.number,
     };
 
     static defaultProps = {
         chatId: 1,
+        highlightedChat: undefined,
     };
 
     handleClick = (chatId) => {
@@ -22,13 +24,14 @@ class ChatList extends React.Component {
     };
 
     render() {
-        const { chatList, chats } = this.props;
+        const { chatList, chats, highlightedChat } = this.props;
 
         const chatElements = chatList.map((chatId) =>
             <ListItem
                 key={ chatId }
                 primaryText={ chats[chatId].name }
                 onClick={ () => this.handleClick(chatId) }
+                style={ { backgroundColor: highlightedChat == chatId ? 'rgb(240, 240, 240)' : '' } }
             />);
 
         return (
@@ -44,6 +47,7 @@ class ChatList extends React.Component {
 const mapStateToProps = ({ chatReducer }) => ({
     chatList: chatReducer.chatList,
     chats: chatReducer.chats,
+    highlightedChat: chatReducer.highlightedChat,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ push }, dispatch);
