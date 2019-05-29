@@ -1,20 +1,25 @@
 import update from 'react-addons-update';
 import { SEND_MESSAGE } from '../actions/messageActions';
+import * as api from '../actions/apiActions';
 
 const initialStore = {
-    messageList: [1,2],
-    messages: {1: {sender: 'user', text: 'test 1'}, 2: {sender: 'bot', text: 'test from bot'}},
-    nextId: 3,
+    messages: {},
+    nextId: 1,
 };
 
 export default function messageReducer(store = initialStore, action) {
     switch (action.type) {
         case SEND_MESSAGE: {
-            const { messageList, messages, nextId } = store;
+            const { messages, nextId } = store;
             return update(store, {
-                messageList: {$set: [...messageList, nextId]},
                 messages: {$set: {...messages, [nextId]: {sender: action.sender, text: action.text}}},
                 nextId: {$set: nextId + 1},
+            });
+        }
+        case api.SUCCESS_CHATS_LOADING: {
+            return update(store, {
+                messages: { $set: action.payload.entities.messages },
+                nextId: { $set: Object.keys(action.payload.entities.messages).length + 1 },
             });
         }
         default:

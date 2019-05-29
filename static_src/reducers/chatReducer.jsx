@@ -1,12 +1,14 @@
 import update from 'react-addons-update';
 import { SEND_MESSAGE } from '../actions/messageActions';
 import { HIGHLIGHT_CHAT, UNHIGHLIGHT_CHAT } from '../actions/highlightChatAction';
+import * as api from '../actions/apiActions';
 
 const initialStore = {
-    chatList: [1, 2],
-    chats: {1: { name: 'chat1', messageList: [1, 2] }, 2: { name: 'chat2', messageList: [] }},
-    nextMessageId: 3,
+    chatList: [],
+    chats: {},
+    nextMessageId: 1,
     highlightedChat: undefined,
+    isLoading: true,
 };
 
 
@@ -29,6 +31,25 @@ export default function chatReducer(store = initialStore, action) {
         case UNHIGHLIGHT_CHAT: {
             return update(store, {
                 highlightedChat: { $set: undefined },
+            });
+        }
+        case api.START_CHATS_LOADING: {
+            return update(store, {
+                isLoading: { $set: true },
+            });
+        }
+        case api.SUCCESS_CHATS_LOADING: {
+            console.log(action.payload);
+            return update(store, {
+                chatList: { $set: action.payload.result },
+                chats: { $set: action.payload.entities.chats },
+                nextMessageId: { $set: Object.keys(action.payload.entities.messages).length + 1 },
+                isLoading: { $set: false },
+            });
+        }
+        case api.ERROR_CHATS_LOADING: {
+            return update(store, {
+                isLoading: { $set: false },
             });
         }
         default:

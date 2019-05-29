@@ -6,19 +6,16 @@ import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux';
 import { sendMessage } from '../actions/messageActions';
 import connect from "react-redux/es/connect/connect";
+import CircularProgress from 'material-ui/CircularProgress';
 
 class MessageField extends React.Component {
     static propTypes = {
-        messageList: PropTypes.array.isRequired,
         messages: PropTypes.object.isRequired,
         nextId: PropTypes.number.isRequired,
         sendMessage: PropTypes.func.isRequired,
         chatId: PropTypes.number,
         chats: PropTypes.object.isRequired,
-    };
-
-    static defaultProps = {
-        chatId: 1,
+        isLoading: PropTypes.bool.isRequired,
     };
 
     state = {
@@ -37,10 +34,19 @@ class MessageField extends React.Component {
         }
     };
 
+    handleKeyUp = (e) => {
+        if (e.keyCode === 13) { // Enter
+            this.handleSendMessage('user', this.state.input);
+        }
+    };
+
     render(){
+        if (this.props.isLoading) {
+            return <CircularProgress />
+        }
         const { messages, chats, chatId } = this.props;
         const messageElements = chats[chatId].messageList.map(
-            (idx, index) => <Message key={ `${Date.now()}_${idx}_${index}` } text={ messages[idx].text } sender={ messages[idx].sender } />
+            (element, index) => <Message key={ `${Date.now()}_${index}` } sender={ messages[element].sender } text={ messages[element].text } />
         );
         return (
             <div>
@@ -50,6 +56,7 @@ class MessageField extends React.Component {
                     underlineFocusStyle={{ borderColor: '#3f51b5' }}
                     name="input"
                     value={ this.state.input }
+                    onKeyUp={ this.handleKeyUp }
                     onChange={ this.handleInput }
                     placeholder="Введите сообщение"
                 />
@@ -66,10 +73,10 @@ class MessageField extends React.Component {
 }
 
 const mapStateToProps = ({ messageReducer, chatReducer }) => ({
-    messageList: messageReducer.messageList,
     messages: messageReducer.messages,
     nextId: messageReducer.nextId,
     chats: chatReducer.chats,
+    isLoading: chatReducer.isLoading,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ sendMessage }, dispatch);
